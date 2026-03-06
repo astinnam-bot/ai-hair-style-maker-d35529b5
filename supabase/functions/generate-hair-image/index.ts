@@ -12,8 +12,8 @@ serve(async (req) => {
   try {
     const { prompt, count = 1 } = await req.json();
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
+    const COMET_API_KEY = Deno.env.get("COMET_API_KEY");
+    if (!COMET_API_KEY) throw new Error("COMET_API_KEY is not configured");
 
     const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
     const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
@@ -43,16 +43,13 @@ serve(async (req) => {
       let messages: any[];
 
       if (i === 0 || !referenceImageUrl) {
-        // First image: generate from scratch
-        const currentPrompt = prompt;
         messages = [
           {
             role: "user",
-            content: `Generate a photorealistic hair model image: ${currentPrompt}. The image should look like a professional salon hair catalog photo with studio lighting and clean background.`,
+            content: `Generate a photorealistic hair model image: ${prompt}. The image should look like a professional salon hair catalog photo with studio lighting and clean background.`,
           },
         ];
       } else {
-        // Subsequent images: use first image as reference for consistency
         messages = [
           {
             role: "user",
@@ -70,16 +67,15 @@ serve(async (req) => {
         ];
       }
 
-      const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      const response = await fetch("https://api.cometapi.com/v1/chat/completions", {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${LOVABLE_API_KEY}`,
+          Authorization: `Bearer ${COMET_API_KEY}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "google/gemini-2.5-flash-image",
+          model: "gpt-image-1",
           messages,
-          modalities: ["image", "text"],
         }),
       });
 
@@ -95,21 +91,40 @@ serve(async (req) => {
           });
         }
         const errorText = await response.text();
-        console.error("AI gateway error:", response.status, errorText);
+        console.error("CometAPI error:", response.status, errorText);
         return new Response(JSON.stringify({ error: "이미지 생성에 실패했습니다." }), {
           status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
 
       const data = await response.json();
-      const imageDataUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+      
+      // CometAPI gpt-image-1 returns images in choices[0].message.content as base64 or URL
+      const choice = data.choices?.[0]?.message;
+      let imageDataUrl: string | null = null;
+
+      // Handle different response formats
+      if (choice?.images?.[0]?.image_url?.url) {
+        imageDataUrl = choice.images[0].image_url.url;
+      } else if (choice?.content) {
+        // gpt-image-1 may return content as array with image_url type
+        if (Array.isArray(choice.content)) {
+          const imgPart = choice.content.find((p: any) => p.type === "image_url" || p.type === "image");
+          if (imgPart?.image_url?.url) {
+            imageDataUrl = imgPart.image_url.url;
+          } else if (imgPart?.url) {
+            imageDataUrl = imgPart.url;
+          }
+        } else if (typeof choice.content === "string" && choice.content.startsWith("data:image")) {
+          imageDataUrl = choice.content;
+        }
+      }
 
       if (imageDataUrl) {
-        // Save first image as reference for consistency
         if (i === 0) {
           referenceImageUrl = imageDataUrl;
         }
-        // Upload base64 image to storage
+        // Upload to storage
         try {
           const base64Match = imageDataUrl.match(/^data:image\/(png|jpeg|jpg|webp);base64,(.+)$/);
           if (base64Match) {
@@ -127,22 +142,26 @@ serve(async (req) => {
 
             if (uploadError) {
               console.error("Upload error:", uploadError);
-              images.push(imageDataUrl); // fallback to base64
+              images.push(imageDataUrl);
             } else {
               const { data: urlData } = supabase.storage
                 .from("hair-images")
                 .getPublicUrl(filePath);
               images.push(urlData.publicUrl);
             }
+          } else if (imageDataUrl.startsWith("http")) {
+            // If CometAPI returns a URL directly, use it
+            images.push(imageDataUrl);
+            if (i === 0) referenceImageUrl = imageDataUrl;
           } else {
             images.push(imageDataUrl);
           }
         } catch (uploadErr) {
           console.error("Storage upload failed:", uploadErr);
-          images.push(imageDataUrl); // fallback
+          images.push(imageDataUrl);
         }
       } else {
-        console.error("No image in response:", JSON.stringify(data).slice(0, 200));
+        console.error("No image in CometAPI response:", JSON.stringify(data).slice(0, 500));
       }
     }
 
