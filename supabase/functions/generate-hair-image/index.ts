@@ -119,12 +119,21 @@ serve(async (req) => {
           if (choice.content.startsWith("data:image")) {
             imageDataUrl = choice.content;
           } else {
-            // Case 2: content contains markdown image with base64 e.g. ![image](data:image/png;base64,...)
-            const mdMatch = choice.content.match(/!\[.*?\]\((data:image\/[^)]+)\)/);
-            if (mdMatch) {
-              imageDataUrl = mdMatch[1];
+            // Case 2: content contains markdown image with base64
+            // Use indexOf instead of regex to handle very large base64 strings
+            const dataPrefix = "data:image/";
+            const dataIdx = choice.content.indexOf(dataPrefix);
+            if (dataIdx !== -1) {
+              // Find the closing parenthesis after the data URL
+              const closeParen = choice.content.indexOf(")", dataIdx);
+              if (closeParen !== -1) {
+                imageDataUrl = choice.content.substring(dataIdx, closeParen);
+              } else {
+                // No closing paren - take everything from dataIdx
+                imageDataUrl = choice.content.substring(dataIdx).trim();
+              }
             } else {
-              // Case 3: content contains a URL
+              // Case 3: content contains a regular URL
               const urlMatch = choice.content.match(/(https?:\/\/[^\s)]+\.(png|jpg|jpeg|webp)[^\s)]*)/i);
               if (urlMatch) {
                 imageDataUrl = urlMatch[1];
