@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { allStyles } from '@/data/hairStyles';
 import { ChevronLeft, Check, CreditCard, Sparkles, Loader2 } from 'lucide-react';
+import { generateHairImage } from '@/lib/generateImage';
+import { useToast } from '@/hooks/use-toast';
 
 const shotLabels = [
   { label: '정면 기본 컷', description: '얼굴 정면에서 본 스타일' },
@@ -16,6 +18,8 @@ const PurchasePage = () => {
   const style = allStyles.find(s => s.id === styleId);
   const [isPurchased, setIsPurchased] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [generatedImages, setGeneratedImages] = useState<string[]>([]);
+  const { toast } = useToast();
 
   if (!style) {
     return (
@@ -27,10 +31,21 @@ const PurchasePage = () => {
 
   const handlePurchase = async () => {
     setIsProcessing(true);
-    // Simulate payment - will connect to Stripe with Cloud
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    setIsPurchased(true);
-    setIsProcessing(false);
+    try {
+      // TODO: Integrate Stripe payment here
+      // For now, generate 4 images after simulated payment
+      const images = await generateHairImage(style.prompt, 4);
+      setGeneratedImages(images);
+      setIsPurchased(true);
+    } catch (err: any) {
+      toast({
+        title: "처리 실패",
+        description: err.message || "잠시 후 다시 시도해주세요.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   return (
@@ -93,7 +108,7 @@ const PurchasePage = () => {
               {isProcessing ? (
                 <>
                   <Loader2 className="w-5 h-5 animate-spin" />
-                  결제 처리 중...
+                  이미지 생성 중... (4장)
                 </>
               ) : (
                 <>
@@ -109,10 +124,18 @@ const PurchasePage = () => {
             <div className="grid grid-cols-2 gap-3 mb-5">
               {shotLabels.map((shot, i) => (
                 <div key={i} className="animate-fade-in" style={{ animationDelay: `${i * 150}ms`, animationFillMode: 'backwards' }}>
-                  <div className="w-full aspect-[3/4] rounded-2xl bg-gradient-to-br from-toss-gray-700 to-toss-gray-900 relative overflow-hidden mb-2">
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <Sparkles className="w-8 h-8 text-primary opacity-40" />
-                    </div>
+                  <div className="w-full aspect-[3/4] rounded-2xl relative overflow-hidden mb-2">
+                    {generatedImages[i] ? (
+                      <img
+                        src={generatedImages[i]}
+                        alt={shot.label}
+                        className="w-full h-full object-cover rounded-2xl"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-secondary rounded-2xl flex items-center justify-center">
+                        <Sparkles className="w-8 h-8 text-muted-foreground opacity-40" />
+                      </div>
+                    )}
                   </div>
                   <p className="text-[13px] font-semibold text-foreground">{shot.label}</p>
                   <p className="text-[11px] text-muted-foreground">{shot.description}</p>

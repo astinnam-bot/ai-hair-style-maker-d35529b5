@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { allStyles } from '@/data/hairStyles';
 import { ChevronLeft, Sparkles, Loader2, Lock } from 'lucide-react';
+import { generateHairImage } from '@/lib/generateImage';
+import { useToast } from '@/hooks/use-toast';
 
 const GeneratePage = () => {
   const navigate = useNavigate();
@@ -9,6 +11,7 @@ const GeneratePage = () => {
   const style = allStyles.find(s => s.id === styleId);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
+  const { toast } = useToast();
 
   if (!style) {
     return (
@@ -20,11 +23,20 @@ const GeneratePage = () => {
 
   const handleGenerate = async () => {
     setIsGenerating(true);
-    // Simulate generation for now - will connect to Gemini API with Cloud
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    // Placeholder gradient image
-    setGeneratedImage('generated');
-    setIsGenerating(false);
+    try {
+      const images = await generateHairImage(style.prompt, 1);
+      if (images.length > 0) {
+        setGeneratedImage(images[0]);
+      }
+    } catch (err: any) {
+      toast({
+        title: "이미지 생성 실패",
+        description: err.message || "잠시 후 다시 시도해주세요.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const genderLabel = style.gender === 'male' ? '남성' : '여성';
@@ -79,14 +91,12 @@ const GeneratePage = () => {
         ) : (
           <div className="animate-slide-up">
             {/* Generated image with watermark */}
-            <div className="w-full aspect-[3/4] rounded-2xl bg-gradient-to-br from-toss-gray-700 to-toss-gray-900 relative overflow-hidden mb-4 watermark">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center">
-                  <Sparkles className="w-16 h-16 text-primary mx-auto mb-3 opacity-60" />
-                  <p className="text-primary-foreground/80 text-sm font-medium">{style.name}</p>
-                  <p className="text-primary-foreground/50 text-xs mt-1">AI Generated Preview</p>
-                </div>
-              </div>
+            <div className="w-full aspect-[3/4] rounded-2xl relative overflow-hidden mb-4 watermark">
+              <img
+                src={generatedImage}
+                alt={style.name}
+                className="w-full h-full object-cover rounded-2xl"
+              />
             </div>
 
             {/* Info */}
