@@ -105,6 +105,10 @@ serve(async (req) => {
       const imageDataUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
 
       if (imageDataUrl) {
+        // Save first image as reference for consistency
+        if (i === 0) {
+          referenceImageUrl = imageDataUrl;
+        }
         // Upload base64 image to storage
         try {
           const base64Match = imageDataUrl.match(/^data:image\/(png|jpeg|jpg|webp);base64,(.+)$/);
