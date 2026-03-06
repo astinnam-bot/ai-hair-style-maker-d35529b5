@@ -100,6 +100,15 @@ const GeneratePage = () => {
               />
             </div>
 
+            {/* Download preview */}
+            <button
+              onClick={() => downloadImage(generatedImage, `${style.name}_preview.jpg`)}
+              className="w-full mb-3 bg-secondary text-foreground rounded-2xl py-3 text-[14px] font-semibold transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-2"
+            >
+              <Download className="w-4 h-4" />
+              미리보기 이미지 저장
+            </button>
+
             {/* Info */}
             <div className="bg-secondary rounded-2xl p-4 mb-4">
               <p className="text-[13px] text-muted-foreground">
