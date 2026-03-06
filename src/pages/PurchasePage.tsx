@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { allStyles } from '@/data/hairStyles';
-import { ChevronLeft, Check, CreditCard, Sparkles, Loader2 } from 'lucide-react';
+import { ChevronLeft, Check, CreditCard, Sparkles, Loader2, Download } from 'lucide-react';
 import { generateHairImage } from '@/lib/generateImage';
+import { downloadImage } from '@/lib/downloadImage';
 import { useToast } from '@/hooks/use-toast';
 
 const shotLabels = [
@@ -142,6 +143,19 @@ const PurchasePage = () => {
                 </div>
               ))}
             </div>
+
+            {/* Download all button */}
+            <button
+              onClick={() => {
+                generatedImages.forEach((img, i) => {
+                  setTimeout(() => downloadImage(img, `${style.name}_${shotLabels[i].label}.jpg`), i * 500);
+                });
+              }}
+              className="w-full mb-4 bg-primary text-primary-foreground rounded-2xl py-4 text-[16px] font-bold transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-2"
+            >
+              <Download className="w-5 h-5" />
+              전체 이미지 다운로드
+            </button>
 
             {/* Success info */}
             <div className="bg-secondary rounded-2xl p-4">
