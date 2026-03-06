@@ -103,11 +103,10 @@ serve(async (req) => {
       const choice = data.choices?.[0]?.message;
       let imageDataUrl: string | null = null;
 
-      // Handle different response formats
+      // Handle different response formats from CometAPI
       if (choice?.images?.[0]?.image_url?.url) {
         imageDataUrl = choice.images[0].image_url.url;
       } else if (choice?.content) {
-        // gpt-image-1 may return content as array with image_url type
         if (Array.isArray(choice.content)) {
           const imgPart = choice.content.find((p: any) => p.type === "image_url" || p.type === "image");
           if (imgPart?.image_url?.url) {
@@ -115,8 +114,23 @@ serve(async (req) => {
           } else if (imgPart?.url) {
             imageDataUrl = imgPart.url;
           }
-        } else if (typeof choice.content === "string" && choice.content.startsWith("data:image")) {
-          imageDataUrl = choice.content;
+        } else if (typeof choice.content === "string") {
+          // Case 1: content is directly a data URL
+          if (choice.content.startsWith("data:image")) {
+            imageDataUrl = choice.content;
+          } else {
+            // Case 2: content contains markdown image with base64 e.g. ![image](data:image/png;base64,...)
+            const mdMatch = choice.content.match(/!\[.*?\]\((data:image\/[^)]+)\)/);
+            if (mdMatch) {
+              imageDataUrl = mdMatch[1];
+            } else {
+              // Case 3: content contains a URL
+              const urlMatch = choice.content.match(/(https?:\/\/[^\s)]+\.(png|jpg|jpeg|webp)[^\s)]*)/i);
+              if (urlMatch) {
+                imageDataUrl = urlMatch[1];
+              }
+            }
+          }
         }
       }
 
