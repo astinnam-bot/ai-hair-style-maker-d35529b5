@@ -74,7 +74,7 @@ serve(async (req) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "gpt-image-1",
+          model: "gemini-2.5-flash-image",
           messages,
         }),
       });
