@@ -3,8 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { allStyles } from '@/data/hairStyles';
 import { ChevronLeft, Check, CreditCard, Sparkles, Loader2, Download } from 'lucide-react';
 import { generateHairImage } from '@/lib/generateImage';
-import { downloadImage } from '@/lib/downloadImage';
 import { useToast } from '@/hooks/use-toast';
+import JSZip from 'jszip';
 
 const shotLabels = [
   { label: '정면 기본 컷', description: '얼굴 정면에서 본 스타일' },
@@ -146,15 +146,34 @@ const PurchasePage = () => {
 
             {/* Download all button */}
             <button
-              onClick={() => {
-                generatedImages.forEach((img, i) => {
-                  setTimeout(() => downloadImage(img, `${style.name}_${shotLabels[i].label}.jpg`), i * 500);
-                });
+              onClick={async () => {
+                try {
+                  const zip = new JSZip();
+                  await Promise.all(
+                    generatedImages.map(async (img, i) => {
+                      const res = await fetch(img);
+                      const blob = await res.blob();
+                      const ext = blob.type.includes("png") ? "png" : "jpg";
+                      zip.file(`${style.name}_${shotLabels[i].label}.${ext}`, blob);
+                    })
+                  );
+                  const content = await zip.generateAsync({ type: "blob" });
+                  const url = URL.createObjectURL(content);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `${style.name}_전체이미지.zip`;
+                  document.body.appendChild(a);
+                  a.click();
+                  document.body.removeChild(a);
+                  URL.revokeObjectURL(url);
+                } catch {
+                  toast({ title: "다운로드 실패", description: "잠시 후 다시 시도해주세요.", variant: "destructive" });
+                }
               }}
               className="w-full mb-4 bg-primary text-primary-foreground rounded-2xl py-4 text-[16px] font-bold transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-2"
             >
               <Download className="w-5 h-5" />
-              전체 이미지 다운로드
+              전체 이미지 다운로드 *.zip
             </button>
 
             {/* Success info */}
