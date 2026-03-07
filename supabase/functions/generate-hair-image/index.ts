@@ -37,7 +37,7 @@ function buildVarietyPrompt(basePrompt: string): string {
   const build = pickRandom(traits.builds);
   const vibe = pickRandom(traits.vibes);
   const uniqueId = Math.random().toString(36).substring(2, 8);
-  return `${basePrompt}. IMPORTANT: Generate a UNIQUE and DISTINCTIVE person, NOT a generic model. The model is a Korean ${isMale ? "man" : "woman"} in their ${age}, with a ${face}, ${skin}, ${build}, and a ${vibe}. This person has unique individual features that make them look like a real specific person (model ID: ${uniqueId}). Do NOT reuse the same face from previous generations.`;
+  return `${basePrompt}. IMPORTANT: Generate a UNIQUE and DISTINCTIVE person, NOT a generic model. The model is a Korean ${isMale ? "man" : "woman"} in their ${age}, with a ${face}, ${skin}, ${build}, and a ${vibe}. The person MUST be wearing appropriate clothing (e.g. a casual top, shirt, blouse, or sweater). NEVER generate a bare-shouldered or unclothed model. This person has unique individual features that make them look like a real specific person (model ID: ${uniqueId}). Do NOT reuse the same face from previous generations.`;
 }
 
 function extractImageUrl(choice: any): string | null {
@@ -135,7 +135,7 @@ serve(async (req) => {
               { type: "image_url", image_url: { url: currentReference } },
               {
                 type: "text",
-                text: `This is a reference photo of a hair model. Generate the EXACT SAME person with the EXACT SAME hairstyle, hair color, face, and clothing, but now shown from a ${angleDescriptions[i]}. Keep the same studio lighting and clean background. The person must look identical - same face shape, skin tone, hair texture, and style. Only the camera angle changes to ${angleDescriptions[i]}.`,
+                text: `This is a reference photo of a hair model. Generate the EXACT SAME person with the EXACT SAME hairstyle, hair color, face, and clothing, but now shown from a ${angleDescriptions[i]}. The person MUST be wearing appropriate clothing at all times. Keep the same studio lighting and clean background. The person must look identical - same face shape, skin tone, hair texture, and style. Only the camera angle changes to ${angleDescriptions[i]}.`,
               },
             ],
           },
