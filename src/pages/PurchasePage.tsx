@@ -22,7 +22,14 @@ const PurchasePage = () => {
   const [isPurchased, setIsPurchased] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [generatedImages, setGeneratedImages] = useState<string[]>([]);
+  const [affiliation, setAffiliation] = useState('');
+  const [initials, setInitials] = useState('');
   const { toast } = useToast();
+
+  const currentYear = new Date().getFullYear();
+  const copyrightText = affiliation || initials
+    ? `© ${currentYear}${affiliation ? ` ${affiliation}` : ''}${initials ? ` ${initials}` : ''}. All Rights Reserved.`
+    : '';
 
   if (!style) {
     return (
