@@ -70,7 +70,12 @@ function buildVarietyPrompt(basePrompt: string): string {
   const vibe = pickRandom(traits.vibes);
   const uniqueId = Math.random().toString(36).substring(2, 8);
   const clothing = getSeasonalClothing(isMale);
-  return `${basePrompt}. IMPORTANT: Generate a UNIQUE and DISTINCTIVE person, NOT a generic model. The model is a Korean ${isMale ? "man" : "woman"} in their ${age}, with a ${face}, ${skin}, ${build}, and a ${vibe}. The person MUST be wearing a ${clothing}. NEVER generate a bare-shouldered or unclothed model. This person has unique individual features that make them look like a real specific person (model ID: ${uniqueId}). Do NOT reuse the same face from previous generations.`;
+
+  // Detect ethnicity from prompt
+  const isWestern = lowerPrompt.includes("western") || lowerPrompt.includes("caucasian") || lowerPrompt.includes("foreign");
+  const ethnicityDesc = isWestern ? "Western Caucasian" : "Korean";
+
+  return `${basePrompt}. IMPORTANT: Generate a UNIQUE and DISTINCTIVE person, NOT a generic model. The model is a ${ethnicityDesc} ${isMale ? "man" : "woman"} in their ${age}, with a ${face}, ${skin}, ${build}, and a ${vibe}. The person MUST be wearing a ${clothing}. NEVER generate a bare-shouldered or unclothed model. This person has unique individual features that make them look like a real specific person (model ID: ${uniqueId}). Do NOT reuse the same face from previous generations.`;
 }
 
 function extractImageUrl(choice: any): string | null {

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { allStyles } from '@/data/hairStyles';
-import { ChevronLeft, Sparkles, Loader2, Lock, Download } from 'lucide-react';
+import { ChevronLeft, Sparkles, Loader2, Lock, Download, RefreshCw } from 'lucide-react';
 import { generateHairImage } from '@/lib/generateImage';
 import { downloadImageWithWatermark } from '@/lib/downloadImage';
 import { useToast } from '@/hooks/use-toast';
@@ -40,6 +40,7 @@ const GeneratePage = () => {
 
   const handleGenerate = async () => {
     setIsGenerating(true);
+    setGeneratedImage(null);
     try {
       const ageDesc = ageMap[age] || 'in their 20s';
       const ethnicityDesc = ethnicityMap[ethnicity] || 'Korean';
@@ -120,14 +121,28 @@ const GeneratePage = () => {
               />
             </div>
 
-            {/* Download preview */}
-            <button
-              onClick={() => downloadImageWithWatermark(generatedImage, `${style.name}_preview.jpg`)}
-              className="w-full mb-3 bg-secondary text-foreground rounded-2xl py-3 text-[14px] font-semibold transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-2"
-            >
-              <Download className="w-4 h-4" />
-              미리보기 이미지 저장
-            </button>
+            {/* Action buttons */}
+            <div className="flex gap-2 mb-3">
+              <button
+                onClick={handleGenerate}
+                disabled={isGenerating}
+                className="flex-1 bg-secondary text-foreground rounded-2xl py-3 text-[14px] font-semibold transition-all duration-200 active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                {isGenerating ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <RefreshCw className="w-4 h-4" />
+                )}
+                다시 생성
+              </button>
+              <button
+                onClick={() => downloadImageWithWatermark(generatedImage, `${style.name}_preview.jpg`)}
+                className="flex-1 bg-secondary text-foreground rounded-2xl py-3 text-[14px] font-semibold transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-2"
+              >
+                <Download className="w-4 h-4" />
+                이미지 저장
+              </button>
+            </div>
 
             {/* Info */}
             <div className="bg-secondary rounded-2xl p-4 mb-4">
