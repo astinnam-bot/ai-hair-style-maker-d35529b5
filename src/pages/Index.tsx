@@ -1,9 +1,38 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { genderOptions } from '@/data/hairStyles';
 import { Scissors } from 'lucide-react';
+
+const genderChoices = [
+  { id: 'male', label: '남성', emoji: '👨' },
+  { id: 'female', label: '여성', emoji: '👩' },
+];
+
+const ageChoices = [
+  { id: '20s', label: '20대' },
+  { id: '30s', label: '30대' },
+  { id: '40s', label: '40대' },
+  { id: '50s', label: '50대' },
+  { id: 'senior', label: '시니어' },
+];
+
+const ethnicityChoices = [
+  { id: 'korean', label: '한국인' },
+  { id: 'foreign', label: '외국인' },
+];
 
 const Index = () => {
   const navigate = useNavigate();
+  const [gender, setGender] = useState<string | null>(null);
+  const [age, setAge] = useState<string | null>(null);
+  const [ethnicity, setEthnicity] = useState<string | null>(null);
+
+  const canProceed = gender && age && ethnicity;
+
+  const handleProceed = () => {
+    if (canProceed) {
+      navigate(`/category/${gender}?age=${age}&ethnicity=${ethnicity}`);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -18,32 +47,83 @@ const Index = () => {
           스타일을 미리 확인하세요
         </h1>
         <p className="text-muted-foreground text-[15px] mt-2">
-          성별을 선택하고 원하는 스타일을 골라보세요
+          옵션을 선택하고 원하는 스타일을 골라보세요
         </p>
       </header>
 
-      {/* Gender Selection */}
-      <main className="flex-1 px-5 pb-10">
-        <div className="grid grid-cols-2 gap-3">
-          {genderOptions.map((option) => (
-            <button
-              key={option.id}
-              onClick={() => navigate(`/category/${option.id}`)}
-              className="bg-card rounded-2xl p-6 border border-border hover:border-primary hover:bg-secondary transition-all duration-200 active:scale-[0.97] text-left group animate-fade-in"
-            >
-              <span className="text-5xl block mb-4">{option.emoji}</span>
-              <span className="text-lg font-bold text-foreground group-hover:text-primary transition-colors">
-                {option.label}
-              </span>
-              <span className="text-sm text-muted-foreground block mt-1">
-                {option.description}
-              </span>
-            </button>
-          ))}
-        </div>
+      <main className="flex-1 px-5 pb-10 space-y-6">
+        {/* 1. Gender */}
+        <section>
+          <h2 className="text-[15px] font-bold text-foreground mb-3">1. 성별</h2>
+          <div className="grid grid-cols-2 gap-3">
+            {genderChoices.map((opt) => (
+              <button
+                key={opt.id}
+                onClick={() => setGender(opt.id)}
+                className={`rounded-2xl p-4 border transition-all duration-200 active:scale-[0.97] text-center ${
+                  gender === opt.id
+                    ? 'border-primary bg-primary/10 text-primary'
+                    : 'border-border bg-card text-foreground hover:border-primary/50'
+                }`}
+              >
+                <span className="text-3xl block mb-2">{opt.emoji}</span>
+                <span className="text-[15px] font-semibold">{opt.label}</span>
+              </button>
+            ))}
+          </div>
+        </section>
+
+        {/* 2. Age */}
+        <section>
+          <h2 className="text-[15px] font-bold text-foreground mb-3">2. 연령대</h2>
+          <div className="flex flex-wrap gap-2">
+            {ageChoices.map((opt) => (
+              <button
+                key={opt.id}
+                onClick={() => setAge(opt.id)}
+                className={`rounded-xl px-5 py-2.5 border text-[14px] font-medium transition-all duration-200 active:scale-[0.97] ${
+                  age === opt.id
+                    ? 'border-primary bg-primary/10 text-primary'
+                    : 'border-border bg-card text-foreground hover:border-primary/50'
+                }`}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        </section>
+
+        {/* 3. Ethnicity */}
+        <section>
+          <h2 className="text-[15px] font-bold text-foreground mb-3">3. 인종</h2>
+          <div className="grid grid-cols-2 gap-3">
+            {ethnicityChoices.map((opt) => (
+              <button
+                key={opt.id}
+                onClick={() => setEthnicity(opt.id)}
+                className={`rounded-xl px-5 py-3 border text-[14px] font-medium transition-all duration-200 active:scale-[0.97] ${
+                  ethnicity === opt.id
+                    ? 'border-primary bg-primary/10 text-primary'
+                    : 'border-border bg-card text-foreground hover:border-primary/50'
+                }`}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        </section>
+
+        {/* Proceed Button */}
+        <button
+          onClick={handleProceed}
+          disabled={!canProceed}
+          className="w-full bg-primary text-primary-foreground rounded-2xl py-4 text-[16px] font-bold transition-all duration-200 active:scale-[0.98] disabled:opacity-40"
+        >
+          스타일 선택하기
+        </button>
 
         {/* Info Banner */}
-        <div className="mt-8 bg-secondary rounded-2xl p-5">
+        <div className="bg-secondary rounded-2xl p-5">
           <p className="text-sm font-semibold text-foreground mb-1">✨ AI가 생성하는 헤어 모델</p>
           <p className="text-[13px] text-muted-foreground leading-relaxed">
             원하는 헤어스타일을 선택하면 AI가 해당 스타일의 헤어 모델 이미지를 생성합니다.
