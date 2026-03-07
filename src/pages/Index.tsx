@@ -17,8 +17,8 @@ const Index = () => {
           <span className="text-sm font-semibold text-primary">HAIR MODEL AI</span>
         </div>
         <h1 className="text-[28px] font-bold leading-tight text-foreground">
-          AI 헤어 모델로<br />
-          스타일을 미리 확인하세요
+          상용가능한<br />
+          나만의 헤어모델 만들기
         </h1>
         <p className="text-muted-foreground text-[15px] mt-2">
           성별을 선택하고 원하는 스타일을 골라보세요
