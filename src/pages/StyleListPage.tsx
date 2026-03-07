@@ -1,10 +1,12 @@
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { getStyles, categoryOptions, type Gender, type Category } from '@/data/hairStyles';
 import { ChevronLeft, Sparkles } from 'lucide-react';
 
 const StyleListPage = () => {
   const navigate = useNavigate();
   const { gender, category } = useParams<{ gender: string; category: string }>();
+  const [searchParams] = useSearchParams();
+  const queryString = searchParams.toString();
 
   const styles = getStyles(gender as Gender, category as Category);
   const genderLabel = gender === 'male' ? '남성' : '여성';
@@ -35,7 +37,7 @@ const StyleListPage = () => {
           {styles.map((style, index) => (
             <button
               key={style.id}
-              onClick={() => navigate(`/generate/${style.id}`)}
+              onClick={() => navigate(`/generate/${style.id}${queryString ? `?${queryString}` : ''}`)}
               className="bg-card rounded-2xl p-4 border border-border hover:border-primary hover:shadow-md transition-all duration-200 active:scale-[0.97] text-left group animate-fade-in"
               style={{ animationDelay: `${index * 50}ms`, animationFillMode: 'backwards' }}
             >

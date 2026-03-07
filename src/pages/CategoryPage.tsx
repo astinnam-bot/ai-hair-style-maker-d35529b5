@@ -1,10 +1,12 @@
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { categoryOptions, type Gender } from '@/data/hairStyles';
 import { ChevronLeft } from 'lucide-react';
 
 const CategoryPage = () => {
   const navigate = useNavigate();
   const { gender } = useParams<{ gender: string }>();
+  const [searchParams] = useSearchParams();
+  const queryString = searchParams.toString();
   const genderLabel = gender === 'male' ? '남성' : '여성';
 
   return (
@@ -32,7 +34,7 @@ const CategoryPage = () => {
           {categoryOptions.map((cat, index) => (
             <button
               key={cat.id}
-              onClick={() => navigate(`/styles/${gender}/${cat.id}`)}
+              onClick={() => navigate(`/styles/${gender}/${cat.id}${queryString ? `?${queryString}` : ''}`)}
               className="bg-card rounded-2xl p-5 border border-border hover:border-primary hover:bg-secondary transition-all duration-200 active:scale-[0.98] text-left group animate-fade-in flex items-center gap-4"
               style={{ animationDelay: `${index * 80}ms`, animationFillMode: 'backwards' }}
             >
