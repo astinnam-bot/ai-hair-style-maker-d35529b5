@@ -29,7 +29,9 @@ function pickRandom<T>(arr: T[]): T {
 }
 
 function buildVarietyPrompt(basePrompt: string): string {
-  const isMale = basePrompt.toLowerCase().includes("male");
+  const lowerPrompt = basePrompt.toLowerCase();
+  const isFemale = lowerPrompt.includes("female") || lowerPrompt.includes("woman") || lowerPrompt.includes("여성");
+  const isMale = !isFemale;
   const traits = isMale ? modelTraits.male : modelTraits.female;
   const age = pickRandom(traits.ages);
   const face = pickRandom(traits.faces);
