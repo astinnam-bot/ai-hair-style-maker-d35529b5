@@ -1,8 +1,8 @@
 import { supabase } from "@/integrations/supabase/client";
 
-export async function generateHairImage(prompt: string, count: number = 1): Promise<string[]> {
+export async function generateHairImage(prompt: string, count: number = 1, referenceImage?: string): Promise<string[]> {
   const { data, error } = await supabase.functions.invoke("generate-hair-image", {
-    body: { prompt, count },
+    body: { prompt, count, referenceImage },
   });
 
   if (error) {

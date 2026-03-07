@@ -116,9 +116,9 @@ const GeneratePage = () => {
               </p>
             </div>
 
-            {/* Purchase CTA */}
+            {/* Purchase CTA - pass preview image via state */}
             <button
-              onClick={() => navigate(`/purchase/${style.id}`)}
+              onClick={() => navigate(`/purchase/${style.id}`, { state: { previewImage: generatedImage } })}
               className="w-full bg-primary text-primary-foreground rounded-2xl py-4 text-[16px] font-bold transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-2"
             >
               <Lock className="w-4 h-4" />

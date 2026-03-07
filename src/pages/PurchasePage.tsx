@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { allStyles } from '@/data/hairStyles';
 import { ChevronLeft, Check, CreditCard, Sparkles, Loader2, Download } from 'lucide-react';
 import { generateHairImage } from '@/lib/generateImage';
@@ -16,6 +16,8 @@ const shotLabels = [
 const PurchasePage = () => {
   const navigate = useNavigate();
   const { styleId } = useParams<{ styleId: string }>();
+  const location = useLocation();
+  const previewImage = (location.state as any)?.previewImage as string | undefined;
   const style = allStyles.find(s => s.id === styleId);
   const [isPurchased, setIsPurchased] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -33,9 +35,8 @@ const PurchasePage = () => {
   const handlePurchase = async () => {
     setIsProcessing(true);
     try {
-      // TODO: Integrate Stripe payment here
-      // For now, generate 4 images after simulated payment
-      const images = await generateHairImage(style.prompt, 4);
+      // Pass previewImage as reference so the 4 shots maintain the same person
+      const images = await generateHairImage(style.prompt, 4, previewImage);
       setGeneratedImages(images);
       setIsPurchased(true);
     } catch (err: any) {
@@ -51,7 +52,6 @@ const PurchasePage = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* Header */}
       <header className="px-5 pt-14 pb-4">
         <button
           onClick={() => navigate(-1)}
@@ -71,7 +71,14 @@ const PurchasePage = () => {
       <main className="flex-1 px-5 pb-10">
         {!isPurchased ? (
           <div className="animate-fade-in">
-            {/* What you get */}
+            {/* Preview thumbnail if available */}
+            {previewImage && (
+              <div className="w-full aspect-[3/4] rounded-2xl overflow-hidden mb-5">
+                <img src={previewImage} alt="미리보기" className="w-full h-full object-cover rounded-2xl" />
+                <p className="text-[12px] text-muted-foreground mt-2 text-center">이 모델의 상세 4컷이 생성됩니다</p>
+              </div>
+            )}
+
             <div className="bg-card rounded-2xl border border-border p-5 mb-5">
               <p className="text-[15px] font-bold text-foreground mb-4">포함된 이미지 4장</p>
               <div className="flex flex-col gap-3">
@@ -89,7 +96,6 @@ const PurchasePage = () => {
               </div>
             </div>
 
-            {/* Price */}
             <div className="bg-secondary rounded-2xl p-5 mb-5">
               <div className="flex items-center justify-between">
                 <span className="text-[14px] text-muted-foreground">결제 금액</span>
@@ -100,7 +106,6 @@ const PurchasePage = () => {
               </p>
             </div>
 
-            {/* Pay Button */}
             <button
               onClick={handlePurchase}
               disabled={isProcessing}
@@ -121,17 +126,12 @@ const PurchasePage = () => {
           </div>
         ) : (
           <div className="animate-slide-up">
-            {/* Generated 4 shots */}
             <div className="grid grid-cols-2 gap-3 mb-5">
               {shotLabels.map((shot, i) => (
                 <div key={i} className="animate-fade-in" style={{ animationDelay: `${i * 150}ms`, animationFillMode: 'backwards' }}>
                   <div className="w-full aspect-[3/4] rounded-2xl relative overflow-hidden mb-2">
                     {generatedImages[i] ? (
-                      <img
-                        src={generatedImages[i]}
-                        alt={shot.label}
-                        className="w-full h-full object-cover rounded-2xl"
-                      />
+                      <img src={generatedImages[i]} alt={shot.label} className="w-full h-full object-cover rounded-2xl" />
                     ) : (
                       <div className="w-full h-full bg-secondary rounded-2xl flex items-center justify-center">
                         <Sparkles className="w-8 h-8 text-muted-foreground opacity-40" />
@@ -144,7 +144,6 @@ const PurchasePage = () => {
               ))}
             </div>
 
-            {/* Download all button */}
             <button
               onClick={async () => {
                 try {
@@ -176,7 +175,6 @@ const PurchasePage = () => {
               전체 이미지 다운로드 *.zip
             </button>
 
-            {/* Success info */}
             <div className="bg-secondary rounded-2xl p-4">
               <p className="text-[13px] text-foreground font-semibold mb-1">✅ 결제가 완료되었습니다</p>
               <p className="text-[12px] text-muted-foreground">
@@ -185,7 +183,6 @@ const PurchasePage = () => {
               </p>
             </div>
 
-            {/* Back to home */}
             <button
               onClick={() => navigate('/')}
               className="w-full mt-4 bg-secondary text-foreground rounded-2xl py-4 text-[15px] font-bold transition-all duration-200 active:scale-[0.98]"
