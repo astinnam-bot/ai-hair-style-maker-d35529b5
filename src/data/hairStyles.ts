@@ -28,7 +28,7 @@ const maleCuts: HairStyle[] = [
   name,
   gender: 'male',
   category: 'cut',
-  prompt: `A professional Korean male hair model with a ${name} hairstyle, studio lighting, front view, clean background, high quality portrait photography, editorial style`,
+  prompt: `A professional Korean male hair model with a ${name} hairstyle, studio lighting, front view, bright sheer curtain background, high quality portrait photography, editorial style`,
 }));
 
 const femaleCuts: HairStyle[] = [
@@ -38,7 +38,7 @@ const femaleCuts: HairStyle[] = [
   name,
   gender: 'female',
   category: 'cut',
-  prompt: `A professional Korean female hair model with a ${name} hairstyle, studio lighting, front view, clean background, high quality portrait photography, editorial style`,
+  prompt: `A professional Korean female hair model with a ${name} hairstyle, studio lighting, front view, bright sheer curtain background, high quality portrait photography, editorial style`,
 }));
 
 const malePerms: HairStyle[] = [
@@ -50,7 +50,7 @@ const malePerms: HairStyle[] = [
   name,
   gender: 'male',
   category: 'perm',
-  prompt: `A professional Korean male hair model with a ${name} perm hairstyle, natural texture, studio lighting, front view, clean background, high quality portrait photography`,
+  prompt: `A professional Korean male hair model with a ${name} perm hairstyle, natural texture, studio lighting, front view, bright sheer curtain background, high quality portrait photography`,
 }));
 
 const femalePerms: HairStyle[] = [
@@ -62,7 +62,7 @@ const femalePerms: HairStyle[] = [
   name,
   gender: 'female',
   category: 'perm',
-  prompt: `A professional Korean female hair model with a ${name} perm hairstyle, elegant texture, studio lighting, front view, clean background, high quality portrait photography`,
+  prompt: `A professional Korean female hair model with a ${name} perm hairstyle, elegant texture, studio lighting, front view, bright sheer curtain background, high quality portrait photography`,
 }));
 
 const maleColors: HairStyle[] = [
@@ -73,7 +73,7 @@ const maleColors: HairStyle[] = [
   name,
   gender: 'male',
   category: 'color',
-  prompt: `A professional Korean male hair model with ${name} hair color, beautiful color tones, studio lighting, front view, clean background, high quality portrait photography`,
+  prompt: `A professional Korean male hair model with ${name} hair color, beautiful color tones, studio lighting, front view, bright sheer curtain background, high quality portrait photography`,
 }));
 
 const femaleColors: HairStyle[] = [
@@ -85,7 +85,7 @@ const femaleColors: HairStyle[] = [
   name,
   gender: 'female',
   category: 'color',
-  prompt: `A professional Korean female hair model with ${name} hair color, beautiful color tones, studio lighting, front view, clean background, high quality portrait photography`,
+  prompt: `A professional Korean female hair model with ${name} hair color, beautiful color tones, studio lighting, front view, bright sheer curtain background, high quality portrait photography`,
 }));
 
 export const allStyles: HairStyle[] = [

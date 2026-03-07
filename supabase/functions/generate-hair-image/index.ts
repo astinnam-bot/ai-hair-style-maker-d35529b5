@@ -175,7 +175,7 @@ serve(async (req) => {
               { type: "image_url", image_url: { url: currentReference } },
               {
                 type: "text",
-                text: `This is a reference photo of a hair model. Generate the EXACT SAME person with the EXACT SAME hairstyle, hair color, face, and clothing, but now shown from a ${angleDescriptions[i]}. The person MUST be wearing appropriate clothing at all times. Keep the same studio lighting and clean background. The person must look identical - same face shape, skin tone, hair texture, and style. Only the camera angle changes to ${angleDescriptions[i]}.${copyrightInstruction}`,
+                text: `This is a reference photo of a hair model. Generate the EXACT SAME person with the EXACT SAME hairstyle, hair color, face, and clothing, but now shown from a ${angleDescriptions[i]}. The person MUST be wearing appropriate clothing at all times. Keep the same studio lighting and bright sheer curtain background. The person must look identical - same face shape, skin tone, hair texture, and style. Only the camera angle changes to ${angleDescriptions[i]}.${copyrightInstruction}`,
               },
             ],
           },
