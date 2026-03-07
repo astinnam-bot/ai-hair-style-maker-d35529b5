@@ -205,9 +205,20 @@ const PurchasePage = () => {
           </div>
         ) : (
           <div className="animate-slide-up">
+            {/* Merged image */}
+            {generatedImages[4] && (
+              <div className="mb-5 animate-fade-in" style={{ animationDelay: '0ms', animationFillMode: 'backwards' }}>
+                <div className="w-full aspect-square rounded-2xl overflow-hidden mb-2">
+                  <img src={generatedImages[4]} alt="병합 이미지" className="w-full h-full object-cover rounded-2xl" />
+                </div>
+                <p className="text-[13px] font-semibold text-foreground">4컷 병합 이미지</p>
+                <p className="text-[11px] text-muted-foreground">정면 · 45도 · 측면 · 후면 한눈에 보기</p>
+              </div>
+            )}
+
             <div className="grid grid-cols-2 gap-3 mb-5">
               {shotLabels.map((shot, i) => (
-                <div key={i} className="animate-fade-in" style={{ animationDelay: `${i * 150}ms`, animationFillMode: 'backwards' }}>
+                <div key={i} className="animate-fade-in" style={{ animationDelay: `${(i + 1) * 150}ms`, animationFillMode: 'backwards' }}>
                   <div className="w-full aspect-[3/4] rounded-2xl relative overflow-hidden mb-2">
                     {generatedImages[i] ? (
                       <img src={generatedImages[i]} alt={shot.label} className="w-full h-full object-cover rounded-2xl" />
@@ -232,7 +243,8 @@ const PurchasePage = () => {
                       const res = await fetch(img);
                       const blob = await res.blob();
                       const ext = blob.type.includes("png") ? "png" : "jpg";
-                      zip.file(`${style.name}_${shotLabels[i].label}.${ext}`, blob);
+                      const label = i < 4 ? shotLabels[i].label : '4컷_병합';
+                      zip.file(`${style.name}_${label}.${ext}`, blob);
                     })
                   );
                   const content = await zip.generateAsync({ type: "blob" });
@@ -257,7 +269,7 @@ const PurchasePage = () => {
             <div className="bg-secondary rounded-2xl p-4">
               <p className="text-[13px] text-foreground font-semibold mb-1">✅ 결제가 완료되었습니다</p>
               <p className="text-[12px] text-muted-foreground">
-                {style.name} 스타일의 상세 4컷이 생성되었습니다.
+                {style.name} 스타일의 상세 5장이 생성되었습니다.
                 고화질 워터마크 없는 이미지를 확인하세요.
               </p>
             </div>
