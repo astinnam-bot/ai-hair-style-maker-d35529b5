@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { allStyles } from '@/data/hairStyles';
 import { ChevronLeft, Sparkles, Loader2, Lock, Download } from 'lucide-react';
 import { generateHairImage } from '@/lib/generateImage';
@@ -9,10 +9,25 @@ import { useToast } from '@/hooks/use-toast';
 const GeneratePage = () => {
   const navigate = useNavigate();
   const { styleId } = useParams<{ styleId: string }>();
+  const [searchParams] = useSearchParams();
+  const age = searchParams.get('age') || '20s';
+  const ethnicity = searchParams.get('ethnicity') || 'korean';
   const style = allStyles.find(s => s.id === styleId);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const { toast } = useToast();
+
+  const ageMap: Record<string, string> = {
+    '20s': 'in their 20s',
+    '30s': 'in their 30s',
+    '40s': 'in their 40s',
+    '50s': 'in their 50s',
+    'senior': 'senior aged (60+)',
+  };
+  const ethnicityMap: Record<string, string> = {
+    'korean': 'Korean',
+    'foreign': 'Western/Caucasian',
+  };
 
 
   if (!style) {
@@ -26,7 +41,9 @@ const GeneratePage = () => {
   const handleGenerate = async () => {
     setIsGenerating(true);
     try {
-      const finalPrompt = style.prompt;
+      const ageDesc = ageMap[age] || 'in their 20s';
+      const ethnicityDesc = ethnicityMap[ethnicity] || 'Korean';
+      const finalPrompt = `${style.prompt}, ${ethnicityDesc} person ${ageDesc}`;
       const images = await generateHairImage(finalPrompt, 1);
       if (images.length > 0) {
         setGeneratedImage(images[0]);
