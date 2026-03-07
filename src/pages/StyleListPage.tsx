@@ -3,6 +3,7 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { getStyles, categoryOptions, type Gender, type Category } from '@/data/hairStyles';
 import { ChevronLeft, Sparkles, Loader2, ImagePlus } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import KakaoShareButton from '@/components/KakaoShareButton';
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 
@@ -72,13 +73,16 @@ const StyleListPage = () => {
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
       <header className="px-5 pt-14 pb-4">
-        <button
-          onClick={() => navigate(`/category/${gender}`)}
-          className="flex items-center gap-1 text-muted-foreground text-sm mb-4 hover:text-foreground transition-colors"
-        >
-          <ChevronLeft className="w-4 h-4" />
-          뒤로
-        </button>
+        <div className="flex items-center justify-between mb-4">
+          <button
+            onClick={() => navigate(`/category/${gender}`)}
+            className="flex items-center gap-1 text-muted-foreground text-sm hover:text-foreground transition-colors"
+          >
+            <ChevronLeft className="w-4 h-4" />
+            뒤로
+          </button>
+          <KakaoShareButton title={`${genderLabel} · ${catLabel}`} description="AI 헤어모델 스타일 목록" />
+        </div>
         <h1 className="text-[24px] font-bold text-foreground">
           {genderLabel} · {catLabel}
         </h1>

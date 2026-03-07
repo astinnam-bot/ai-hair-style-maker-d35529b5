@@ -1,6 +1,7 @@
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { categoryOptions, type Gender } from '@/data/hairStyles';
 import { ChevronLeft } from 'lucide-react';
+import KakaoShareButton from '@/components/KakaoShareButton';
 
 const CategoryPage = () => {
   const navigate = useNavigate();
@@ -13,13 +14,16 @@ const CategoryPage = () => {
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
       <header className="px-5 pt-14 pb-6">
-        <button
-          onClick={() => navigate('/')}
-          className="flex items-center gap-1 text-muted-foreground text-sm mb-4 hover:text-foreground transition-colors"
-        >
-          <ChevronLeft className="w-4 h-4" />
-          뒤로
-        </button>
+        <div className="flex items-center justify-between mb-4">
+          <button
+            onClick={() => navigate('/')}
+            className="flex items-center gap-1 text-muted-foreground text-sm hover:text-foreground transition-colors"
+          >
+            <ChevronLeft className="w-4 h-4" />
+            뒤로
+          </button>
+          <KakaoShareButton title={`${genderLabel} 스타일`} description="AI 헤어모델 스타일 카테고리" />
+        </div>
         <h1 className="text-[26px] font-bold text-foreground">
           {genderLabel} 스타일
         </h1>

@@ -3,6 +3,7 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { allStyles } from '@/data/hairStyles';
 import { ChevronLeft, Sparkles, Loader2, Lock, Download, RefreshCw } from 'lucide-react';
 import { generateHairImage } from '@/lib/generateImage';
+import KakaoShareButton from '@/components/KakaoShareButton';
 import { downloadImageWithWatermark } from '@/lib/downloadImage';
 import { useToast } from '@/hooks/use-toast';
 
@@ -66,13 +67,16 @@ const GeneratePage = () => {
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
       <header className="px-5 pt-14 pb-4">
-        <button
-          onClick={() => navigate(-1)}
-          className="flex items-center gap-1 text-muted-foreground text-sm mb-4 hover:text-foreground transition-colors"
-        >
-          <ChevronLeft className="w-4 h-4" />
-          뒤로
-        </button>
+        <div className="flex items-center justify-between mb-4">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-1 text-muted-foreground text-sm hover:text-foreground transition-colors"
+          >
+            <ChevronLeft className="w-4 h-4" />
+            뒤로
+          </button>
+          <KakaoShareButton title={style.name} description="AI 헤어모델 생성" />
+        </div>
         <h1 className="text-[24px] font-bold text-foreground">
           {style.name}
         </h1>
