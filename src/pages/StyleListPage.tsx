@@ -85,7 +85,15 @@ const StyleListPage = () => {
             <ChevronLeft className="w-4 h-4" />
             뒤로
           </button>
-          <KakaoShareButton title={`${genderLabel} · ${catLabel}`} description="AI 헤어모델 스타일 목록" />
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => navigate('/')}
+              className="flex items-center gap-1 text-muted-foreground text-sm hover:text-foreground transition-colors"
+            >
+              <Home className="w-4 h-4" />
+            </button>
+            <KakaoShareButton title={`${genderLabel} · ${catLabel}`} description="AI 헤어모델 스타일 목록" />
+          </div>
         </div>
         <h1 className="text-[24px] font-bold text-foreground">
           {genderLabel} · {catLabel}

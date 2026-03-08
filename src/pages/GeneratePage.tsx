@@ -75,7 +75,15 @@ const GeneratePage = () => {
             <ChevronLeft className="w-4 h-4" />
             뒤로
           </button>
-          <KakaoShareButton title={style.name} description="AI 헤어모델 생성" />
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => navigate('/')}
+              className="flex items-center gap-1 text-muted-foreground text-sm hover:text-foreground transition-colors"
+            >
+              <Home className="w-4 h-4" />
+            </button>
+            <KakaoShareButton title={style.name} description="AI 헤어모델 생성" />
+          </div>
         </div>
         <h1 className="text-[24px] font-bold text-foreground">
           {style.name}
