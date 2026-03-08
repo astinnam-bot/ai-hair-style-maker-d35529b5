@@ -75,7 +75,7 @@ function buildVarietyPrompt(basePrompt: string): string {
   const isWestern = lowerPrompt.includes("western") || lowerPrompt.includes("caucasian") || lowerPrompt.includes("foreign");
   const ethnicityDesc = isWestern ? "Western Caucasian" : "Korean";
 
-  return `${basePrompt}. IMPORTANT: Generate a UNIQUE and DISTINCTIVE person, NOT a generic model. The model is a ${ethnicityDesc} ${isMale ? "man" : "woman"} in their ${age}, with a ${face}, ${skin}, ${build}, and a ${vibe}. The person MUST be wearing a ${clothing}. NEVER generate a bare-shouldered or unclothed model. This person has unique individual features that make them look like a real specific person (model ID: ${uniqueId}). Do NOT reuse the same face from previous generations.`;
+  return `${basePrompt}. IMPORTANT: Generate a UNIQUE and DISTINCTIVE person, NOT a generic model. The model is a ${ethnicityDesc} ${isMale ? "man" : "woman"} in their ${age}, with a ${face}, ${skin}, ${build}, and a ${vibe}. The person MUST be wearing a ${clothing}. NEVER generate a bare-shouldered or unclothed model. The background should be a cozy stylish cafe atmosphere with warm lighting. The pose should be natural and candid like an SNS Instagram photo, not stiff or overly posed. The outfit should be trendy and fashionable, looking stylish and well-coordinated. This person has unique individual features that make them look like a real specific person (model ID: ${uniqueId}). Do NOT reuse the same face from previous generations.`;
 }
 
 function extractImageUrl(choice: any): string | null {
@@ -175,7 +175,7 @@ serve(async (req) => {
               { type: "image_url", image_url: { url: currentReference } },
               {
                 type: "text",
-                text: `This is a reference photo of a hair model. Generate the EXACT SAME person with the EXACT SAME hairstyle, hair color, face, and clothing, but now shown from a ${angleDescriptions[i]}. The person MUST be wearing appropriate clothing at all times. Keep the same studio lighting and bright sheer curtain background. The person must look identical - same face shape, skin tone, hair texture, and style. Only the camera angle changes to ${angleDescriptions[i]}.${copyrightInstruction}`,
+                text: `This is a reference photo of a hair model. Generate the EXACT SAME person with the EXACT SAME hairstyle, hair color, face, and clothing, but now shown from a ${angleDescriptions[i]}. The person MUST be wearing appropriate clothing at all times. Keep the same cozy cafe atmosphere background with warm lighting. The pose should be natural and candid like an SNS photo. The person must look identical - same face shape, skin tone, hair texture, and style. Only the camera angle changes to ${angleDescriptions[i]}.${copyrightInstruction}`,
               },
             ],
           },
@@ -185,7 +185,7 @@ serve(async (req) => {
         messages = [
           {
             role: "user",
-            content: `Generate a photorealistic hair model image: ${variedPrompt}. The image should look like a professional salon hair catalog photo with studio lighting and clean background.${copyrightInstruction}`,
+            content: `Generate a photorealistic hair model image: ${variedPrompt}. The image should look like a stylish SNS Instagram photo taken in a cozy cafe with warm ambient lighting. The pose should be natural and candid, not stiff. The outfit should be trendy and well-coordinated.${copyrightInstruction}`,
           },
         ];
       }
