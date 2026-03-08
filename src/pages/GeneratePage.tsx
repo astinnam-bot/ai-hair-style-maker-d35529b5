@@ -16,7 +16,14 @@ const GeneratePage = () => {
   const style = allStyles.find(s => s.id === styleId);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
+  const [background, setBackground] = useState<'cafe' | 'hairshop' | 'sns'>('cafe');
   const { toast } = useToast();
+
+  const backgroundOptions = [
+    { id: 'cafe' as const, label: '☕ 카페배경', prompt: 'cozy stylish cafe atmosphere with warm ambient lighting' },
+    { id: 'hairshop' as const, label: '💇 헤어샵배경', prompt: 'modern clean hair salon interior with professional lighting and mirrors' },
+    { id: 'sns' as const, label: '📸 일상SNS', prompt: 'casual everyday outdoor street scene, natural daylight, urban lifestyle background' },
+  ];
 
   const ageMap: Record<string, string> = {
     '20s': 'in their 20s',
@@ -45,7 +52,8 @@ const GeneratePage = () => {
     try {
       const ageDesc = ageMap[age] || 'in their 20s';
       const ethnicityDesc = ethnicityMap[ethnicity] || 'Korean';
-      const finalPrompt = `${style.prompt}, ${ethnicityDesc} person ${ageDesc}`;
+      const bgOption = backgroundOptions.find(b => b.id === background)!;
+      const finalPrompt = `${style.prompt}, ${ethnicityDesc} person ${ageDesc}, ${bgOption.prompt}`;
       const images = await generateHairImage(finalPrompt, 1);
       if (images.length > 0) {
         setGeneratedImage(images[0]);
@@ -103,6 +111,25 @@ const GeneratePage = () => {
               <p className="text-muted-foreground text-sm font-medium">AI 모델 이미지가 여기에 표시됩니다</p>
             </div>
 
+            {/* Background Options */}
+            <div className="mb-6">
+              <p className="text-sm font-semibold text-foreground mb-3">배경 선택</p>
+              <div className="flex gap-2">
+                {backgroundOptions.map(opt => (
+                  <button
+                    key={opt.id}
+                    onClick={() => setBackground(opt.id)}
+                    className={`flex-1 py-2.5 px-3 rounded-xl text-[13px] font-medium transition-all duration-200 border ${
+                      background === opt.id
+                        ? 'bg-primary text-primary-foreground border-primary'
+                        : 'bg-secondary text-muted-foreground border-transparent hover:text-foreground'
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
 
             {/* Generate Button */}
             <button
