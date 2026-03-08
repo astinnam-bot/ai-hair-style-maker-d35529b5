@@ -51,6 +51,7 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         model: "gemini-2.5-flash-image",
+        modalities: ["image", "text"],
         messages: [
           {
             role: "user",
