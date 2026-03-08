@@ -196,7 +196,7 @@ serve(async (req) => {
           Authorization: `Bearer ${COMET_API_KEY}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ model: "gemini-2.5-flash-image", messages }),
+        body: JSON.stringify({ model: "gemini-2.5-flash-image", modalities: ["image", "text"], messages }),
       });
 
       if (!response.ok) {
