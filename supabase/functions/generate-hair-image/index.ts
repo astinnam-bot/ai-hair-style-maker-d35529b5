@@ -6,47 +6,31 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-// Seasonal clothing based on current month
 function getSeasonalClothing(isMale: boolean): string {
-  const month = new Date().getMonth() + 1; // 1-12
+  const month = new Date().getMonth() + 1;
   if (isMale) {
-    if (month >= 3 && month <= 5) {
-      // Spring
-      return pickRandom(["light linen shirt", "thin cotton sweater over a collared shirt", "casual spring jacket with a t-shirt", "knit polo shirt", "denim jacket over a henley"]);
-    } else if (month >= 6 && month <= 8) {
-      // Summer
-      return pickRandom(["crisp white short-sleeve shirt", "breathable linen camp collar shirt", "casual cotton polo", "lightweight henley t-shirt", "relaxed fit crew neck tee"]);
-    } else if (month >= 9 && month <= 11) {
-      // Autumn
-      return pickRandom(["wool crew-neck sweater", "layered flannel shirt", "corduroy jacket over a turtleneck", "knit cardigan over a shirt", "suede bomber jacket with a t-shirt"]);
-    } else {
-      // Winter
-      return pickRandom(["chunky knit turtleneck sweater", "wool overcoat over a button-up shirt", "cashmere crew-neck sweater", "padded vest over a hoodie", "heavy knit cable sweater"]);
-    }
+    if (month >= 3 && month <= 5) return pickRandom(["light linen shirt", "thin cotton sweater over a collared shirt", "casual spring jacket with a t-shirt", "knit polo shirt", "denim jacket over a henley"]);
+    if (month >= 6 && month <= 8) return pickRandom(["crisp white short-sleeve shirt", "breathable linen camp collar shirt", "casual cotton polo", "lightweight henley t-shirt", "relaxed fit crew neck tee"]);
+    if (month >= 9 && month <= 11) return pickRandom(["wool crew-neck sweater", "layered flannel shirt", "corduroy jacket over a turtleneck", "knit cardigan over a shirt", "suede bomber jacket with a t-shirt"]);
+    return pickRandom(["chunky knit turtleneck sweater", "wool overcoat over a button-up shirt", "cashmere crew-neck sweater", "padded vest over a hoodie", "heavy knit cable sweater"]);
   } else {
-    if (month >= 3 && month <= 5) {
-      return pickRandom(["floral blouse", "light cardigan over a camisole", "pastel knit top", "denim jacket over a spring dress", "cotton wrap blouse"]);
-    } else if (month >= 6 && month <= 8) {
-      return pickRandom(["off-shoulder blouse", "lightweight linen top", "airy cotton camisole with a light cardigan", "sleeveless knit top", "breezy floral top"]);
-    } else if (month >= 9 && month <= 11) {
-      return pickRandom(["cozy knit sweater", "trench coat over a blouse", "turtleneck with a blazer", "chunky cardigan", "suede jacket over a fitted top"]);
-    } else {
-      return pickRandom(["cashmere turtleneck", "wool coat over a knit dress", "faux fur collar coat over a blouse", "thick cable-knit sweater", "padded jacket with a scarf"]);
-    }
+    if (month >= 3 && month <= 5) return pickRandom(["floral blouse", "light cardigan over a camisole", "pastel knit top", "denim jacket over a spring dress", "cotton wrap blouse"]);
+    if (month >= 6 && month <= 8) return pickRandom(["off-shoulder blouse", "lightweight linen top", "airy cotton camisole with a light cardigan", "sleeveless knit top", "breezy floral top"]);
+    if (month >= 9 && month <= 11) return pickRandom(["cozy knit sweater", "trench coat over a blouse", "turtleneck with a blazer", "chunky cardigan", "suede jacket over a fitted top"]);
+    return pickRandom(["cashmere turtleneck", "wool coat over a knit dress", "faux fur collar coat over a blouse", "thick cable-knit sweater", "padded jacket with a scarf"]);
   }
 }
 
-// Variety traits to randomize model appearance — all in English for the AI model
 const modelTraits = {
   male: {
-    ages: ["early 20s", "mid 20s", "late 20s", "early 30s", "mid 30s", "late 30s"],
+    ages: ["early 20s", "mid 20s", "late 20s"],
     faces: ["round face shape", "oval face shape", "square jawline", "angular face with high cheekbones", "soft diamond-shaped face"],
     skins: ["fair skin", "light tan skin", "warm medium skin tone", "slightly tanned skin"],
     builds: ["slim build", "average build", "athletic muscular build", "broad-shouldered build"],
     vibes: ["calm relaxed expression", "confident sharp gaze", "friendly warm smile", "serious editorial expression", "playful youthful look"],
   },
   female: {
-    ages: ["early 20s", "mid 20s", "late 20s", "early 30s", "mid 30s", "late 30s"],
+    ages: ["early 20s", "mid 20s", "late 20s"],
     faces: ["round soft face", "oval face shape", "heart-shaped face", "V-line jawline", "small delicate face with high cheekbones"],
     skins: ["porcelain fair skin", "light natural skin", "warm honey skin tone", "slightly tanned glowing skin"],
     builds: ["slim petite build", "average build", "tall slender build"],
@@ -58,8 +42,16 @@ function pickRandom<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
+function cleanBasePrompt(prompt: string): string {
+  return prompt
+    .replace(/studio lighting/gi, "natural warm lighting")
+    .replace(/bright sheer curtain background/gi, "cozy stylish cafe background")
+    .replace(/clean background/gi, "cozy cafe background");
+}
+
 function buildVarietyPrompt(basePrompt: string): string {
-  const lowerPrompt = basePrompt.toLowerCase();
+  const cleaned = cleanBasePrompt(basePrompt);
+  const lowerPrompt = cleaned.toLowerCase();
   const isFemale = lowerPrompt.includes("female") || lowerPrompt.includes("woman") || lowerPrompt.includes("여성");
   const isMale = !isFemale;
   const traits = isMale ? modelTraits.male : modelTraits.female;
@@ -71,39 +63,29 @@ function buildVarietyPrompt(basePrompt: string): string {
   const uniqueId = Math.random().toString(36).substring(2, 8);
   const clothing = getSeasonalClothing(isMale);
 
-  // Detect ethnicity from prompt
   const isWestern = lowerPrompt.includes("western") || lowerPrompt.includes("caucasian") || lowerPrompt.includes("foreign");
   const ethnicityDesc = isWestern ? "Western Caucasian" : "Korean";
 
-  return `${basePrompt}. IMPORTANT: Generate a UNIQUE and DISTINCTIVE person, NOT a generic model. The model is a ${ethnicityDesc} ${isMale ? "man" : "woman"} in their ${age}, with a ${face}, ${skin}, ${build}, and a ${vibe}. The person MUST be wearing a ${clothing}. NEVER generate a bare-shouldered or unclothed model. The background should be a cozy stylish cafe atmosphere with warm lighting. The pose should be natural and candid like an SNS Instagram photo, not stiff or overly posed. The outfit should be trendy and fashionable, looking stylish and well-coordinated. This person has unique individual features that make them look like a real specific person (model ID: ${uniqueId}). Do NOT reuse the same face from previous generations.`;
+  return `${cleaned}. IMPORTANT: Generate a UNIQUE and DISTINCTIVE person, NOT a generic model. The model is a ${ethnicityDesc} ${isMale ? "man" : "woman"} in their ${age}, with a ${face}, ${skin}, ${build}, and a ${vibe}. The person MUST be wearing a ${clothing}. NEVER generate a bare-shouldered or unclothed model. The background should be a cozy stylish cafe atmosphere with warm lighting. The pose should be natural and candid like an SNS Instagram photo, not stiff or overly posed. The outfit should be trendy and fashionable, looking stylish and well-coordinated. This person has unique individual features that make them look like a real specific person (model ID: ${uniqueId}). Do NOT reuse the same face from previous generations.`;
 }
 
 function extractImageUrl(choice: any): string | null {
-  if (choice?.images?.[0]?.image_url?.url) {
-    return choice.images[0].image_url.url;
-  }
+  if (choice?.images?.[0]?.image_url?.url) return choice.images[0].image_url.url;
   if (!choice?.content) return null;
-
   if (Array.isArray(choice.content)) {
     const imgPart = choice.content.find((p: any) => p.type === "image_url" || p.type === "image");
     if (imgPart?.image_url?.url) return imgPart.image_url.url;
     if (imgPart?.url) return imgPart.url;
     return null;
   }
-
   if (typeof choice.content !== "string") return null;
   const content = choice.content;
-
   if (content.startsWith("data:image")) return content;
-
   const dataIdx = content.indexOf("data:image/");
   if (dataIdx !== -1) {
     const closeParen = content.indexOf(")", dataIdx);
-    return closeParen !== -1
-      ? content.substring(dataIdx, closeParen)
-      : content.substring(dataIdx).trim();
+    return closeParen !== -1 ? content.substring(dataIdx, closeParen) : content.substring(dataIdx).trim();
   }
-
   const urlMatch = content.match(/(https?:\/\/[^\s)]+\.(png|jpg|jpeg|webp)[^\s)]*)/i);
   return urlMatch ? urlMatch[1] : null;
 }
@@ -132,8 +114,8 @@ serve(async (req) => {
   try {
     const { prompt, count = 1, referenceImage, copyrightText } = await req.json();
 
-    const COMET_API_KEY = Deno.env.get("COMET_API_KEY");
-    if (!COMET_API_KEY) throw new Error("COMET_API_KEY is not configured");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
     const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
     const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
@@ -157,8 +139,6 @@ serve(async (req) => {
       "back view long shot showing full hairstyle from behind",
     ];
 
-    // If referenceImage is provided (from preview), use it for all 4 angles
-    // Otherwise generate first image with variety, then use it as reference
     let currentReference = referenceImage || null;
     const copyrightInstruction = copyrightText
       ? ` Add a small, elegant copyright watermark text "${copyrightText}" at the bottom center of the image in a semi-transparent white font, like a professional photo watermark.`
@@ -194,44 +174,44 @@ serve(async (req) => {
       const maxRetries = 3;
 
       for (let attempt = 0; attempt < maxRetries; attempt++) {
-        const response = await fetch("https://api.cometapi.com/v1/chat/completions", {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${COMET_API_KEY}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ model: "gemini-2.5-flash-image", modalities: ["image", "text"], messages }),
-        });
-
-        if (!response.ok) {
-          const status = response.status;
-          if (status === 429) {
-            return new Response(JSON.stringify({ error: "요청이 너무 많습니다. 잠시 후 다시 시도해주세요." }), {
-              status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
-            });
-          }
-          if (status === 402) {
-            return new Response(JSON.stringify({ error: "크레딧이 부족합니다." }), {
-              status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
-            });
-          }
-          console.error(`CometAPI error (attempt ${attempt + 1}):`, status, await response.text());
-          if (attempt < maxRetries - 1) continue;
-          return new Response(JSON.stringify({ error: "이미지 생성에 실패했습니다." }), {
-            status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        try {
+          const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${LOVABLE_API_KEY}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ model: "google/gemini-2.5-flash-image", modalities: ["image", "text"], messages }),
           });
+
+          if (!response.ok) {
+            const status = response.status;
+            const body = await response.text();
+            console.error(`AI Gateway error (attempt ${attempt + 1}):`, status, body);
+            if (status === 429) {
+              return new Response(JSON.stringify({ error: "요청이 너무 많습니다. 잠시 후 다시 시도해주세요." }), {
+                status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+              });
+            }
+            if (attempt < maxRetries - 1) continue;
+            return new Response(JSON.stringify({ error: "이미지 생성에 실패했습니다." }), {
+              status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+            });
+          }
+
+          const data = await response.json();
+          imageDataUrl = extractImageUrl(data.choices?.[0]?.message);
+
+          if (imageDataUrl) break;
+          console.error(`No image extracted (attempt ${attempt + 1}):`, JSON.stringify(data).slice(0, 500));
+        } catch (fetchErr) {
+          console.error(`Fetch error (attempt ${attempt + 1}):`, fetchErr);
+          if (attempt >= maxRetries - 1) break;
         }
-
-        const data = await response.json();
-        imageDataUrl = extractImageUrl(data.choices?.[0]?.message);
-
-        if (imageDataUrl) break;
-        console.error(`No image extracted (attempt ${attempt + 1}):`, JSON.stringify(data).slice(0, 300));
       }
 
       if (imageDataUrl) {
         if (!currentReference) currentReference = imageDataUrl;
-
         try {
           const finalUrl = await uploadToStorage(supabase, imageDataUrl, timestamp, i);
           images.push(finalUrl);
