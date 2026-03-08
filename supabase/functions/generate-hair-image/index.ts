@@ -46,11 +46,13 @@ function pickRandom<T>(arr: T[]): T {
 function cleanBasePrompt(prompt: string): string {
   return prompt
     .replace(/studio lighting/gi, "natural warm lighting")
-    .replace(/bright sheer curtain background/gi, "cozy stylish cafe background")
-    .replace(/clean background/gi, "cozy cafe background");
+    .replace(/bright sheer curtain background/gi, "")
+    .replace(/clean background/gi, "");
 }
 
-function buildVarietyPrompt(basePrompt: string): string {
+function buildVarietyPrompt(basePrompt: string, bgPrompt?: string): string {
+
+const backgroundDesc = bgPrompt || "cozy stylish cafe atmosphere with warm ambient lighting";
   const cleaned = cleanBasePrompt(basePrompt);
   const lowerPrompt = cleaned.toLowerCase();
   const isFemale = lowerPrompt.includes("female") || lowerPrompt.includes("woman") || lowerPrompt.includes("여성");
