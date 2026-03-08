@@ -69,7 +69,7 @@ const backgroundDesc = bgPrompt || "cozy stylish cafe atmosphere with warm ambie
   const isWestern = lowerPrompt.includes("western") || lowerPrompt.includes("caucasian") || lowerPrompt.includes("foreign");
   const ethnicityDesc = isWestern ? "Western Caucasian" : "Korean";
 
-  return `${cleaned}. IMPORTANT: Generate a UNIQUE and DISTINCTIVE person, NOT a generic model. The model is a ${ethnicityDesc} ${isMale ? "man" : "woman"} in their ${age}, with a ${face}, ${skin}, ${build}, and a ${vibe}. The person MUST be wearing a ${clothing}. NEVER generate a bare-shouldered or unclothed model. The background should be ${backgroundDesc}. The pose should be natural and candid like an SNS Instagram photo, not stiff or overly posed. The outfit should be trendy and fashionable, looking stylish and well-coordinated. This person has unique individual features that make them look like a real specific person (model ID: ${uniqueId}). Do NOT reuse the same face from previous generations.`;
+  return `${cleaned}. IMPORTANT: Generate a UNIQUE and DISTINCTIVE person, NOT a generic model. The model is a ${ethnicityDesc} ${isMale ? "man" : "woman"} in their ${age}, with a ${face}, ${skin}, ${build}, and a ${vibe}. The person MUST be wearing a ${clothing}. NEVER generate a bare-shouldered or unclothed model. The background should be ${backgroundDesc}. FRAMING: Upper body close-up shot (chest and above), tightly framed to clearly showcase the hairstyle in detail. The hairstyle must be the focal point of the image. The pose should be natural and candid like an SNS Instagram photo, not stiff or overly posed. The outfit should be trendy and fashionable, looking stylish and well-coordinated. This person has unique individual features that make them look like a real specific person (model ID: ${uniqueId}). Do NOT reuse the same face from previous generations.`;
 }
 
 function extractImageUrl(choice: any): string | null {
@@ -136,10 +136,10 @@ serve(async (req) => {
     const timestamp = Date.now();
 
     const angleDescriptions = [
-      "front view portrait",
-      "45 degree angle side view",
-      "complete side profile view",
-      "back view long shot showing full hairstyle from behind",
+      "front view upper body close-up portrait, chest and above, clearly showing the hairstyle",
+      "45 degree angle side view upper body close-up, chest and above, clearly showing the hairstyle from an angle",
+      "complete side profile upper body close-up, chest and above, clearly showing the hairstyle silhouette",
+      "back view upper body close-up showing full hairstyle from behind, head and shoulders",
     ];
 
     let currentReference = referenceImage || null;
@@ -158,7 +158,7 @@ serve(async (req) => {
               { type: "image_url", image_url: { url: currentReference } },
               {
                 type: "text",
-                text: `This is a reference photo of a hair model. Generate the EXACT SAME person with the EXACT SAME hairstyle, hair color, face, and clothing, but now shown from a ${angleDescriptions[i]}. The person MUST be wearing appropriate clothing at all times. Keep the same background atmosphere. The pose should be natural and candid like an SNS photo. The person must look identical - same face shape, skin tone, hair texture, and style. Only the camera angle changes to ${angleDescriptions[i]}.${copyrightInstruction}`,
+                text: `This is a reference photo of a hair model. Generate the EXACT SAME person with the EXACT SAME hairstyle, hair color, face, and clothing, but now shown from a ${angleDescriptions[i]}. IMPORTANT: Frame as an upper body close-up (chest and above) to clearly showcase the hairstyle. The hairstyle must be the focal point. The person MUST be wearing appropriate clothing at all times. Keep the same background atmosphere. The pose should be natural and candid like an SNS photo. The person must look identical - same face shape, skin tone, hair texture, and style. Only the camera angle changes.${copyrightInstruction}`,
               },
             ],
           },
@@ -169,7 +169,7 @@ serve(async (req) => {
         messages = [
           {
             role: "user",
-            content: `Generate a photorealistic hair model image: ${variedPrompt}. The image should look like a stylish SNS Instagram photo with ${bgDesc}. The pose should be natural and candid, not stiff. The outfit should be trendy and well-coordinated.${copyrightInstruction}`,
+            content: `Generate a photorealistic hair model image: ${variedPrompt}. FRAMING: Upper body close-up (chest and above), tightly framed to clearly showcase the hairstyle. The image should look like a stylish SNS Instagram photo with ${bgDesc}. The pose should be natural and candid, not stiff. The outfit should be trendy and well-coordinated.${copyrightInstruction}`,
           },
         ];
       }
