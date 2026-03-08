@@ -112,7 +112,15 @@ const PurchasePage = () => {
             <ChevronLeft className="w-4 h-4" />
             뒤로
           </button>
-          <KakaoShareButton title={style?.name || '상세 컷 구매'} description="AI 헤어모델 상세 컷" />
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => navigate('/')}
+              className="flex items-center gap-1 text-muted-foreground text-sm hover:text-foreground transition-colors"
+            >
+              <Home className="w-4 h-4" />
+            </button>
+            <KakaoShareButton title={style?.name || '상세 컷 구매'} description="AI 헤어모델 상세 컷" />
+          </div>
         </div>
         <h1 className="text-[24px] font-bold text-foreground">
           {isPurchased ? '구매 완료 🎉' : '상세 컷 구매'}
