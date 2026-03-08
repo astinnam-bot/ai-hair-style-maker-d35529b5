@@ -190,38 +190,46 @@ serve(async (req) => {
         ];
       }
 
-      const response = await fetch("https://api.cometapi.com/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${COMET_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ model: "gemini-2.5-flash-image", modalities: ["image", "text"], messages }),
-      });
+      let imageDataUrl: string | null = null;
+      const maxRetries = 3;
 
-      if (!response.ok) {
-        const status = response.status;
-        if (status === 429) {
-          return new Response(JSON.stringify({ error: "요청이 너무 많습니다. 잠시 후 다시 시도해주세요." }), {
-            status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
-          });
-        }
-        if (status === 402) {
-          return new Response(JSON.stringify({ error: "크레딧이 부족합니다." }), {
-            status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
-          });
-        }
-        console.error("CometAPI error:", status, await response.text());
-        return new Response(JSON.stringify({ error: "이미지 생성에 실패했습니다." }), {
-          status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      for (let attempt = 0; attempt < maxRetries; attempt++) {
+        const response = await fetch("https://api.cometapi.com/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${COMET_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ model: "gemini-2.5-flash-image", modalities: ["image", "text"], messages }),
         });
+
+        if (!response.ok) {
+          const status = response.status;
+          if (status === 429) {
+            return new Response(JSON.stringify({ error: "요청이 너무 많습니다. 잠시 후 다시 시도해주세요." }), {
+              status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+            });
+          }
+          if (status === 402) {
+            return new Response(JSON.stringify({ error: "크레딧이 부족합니다." }), {
+              status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
+            });
+          }
+          console.error(`CometAPI error (attempt ${attempt + 1}):`, status, await response.text());
+          if (attempt < maxRetries - 1) continue;
+          return new Response(JSON.stringify({ error: "이미지 생성에 실패했습니다." }), {
+            status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+
+        const data = await response.json();
+        imageDataUrl = extractImageUrl(data.choices?.[0]?.message);
+
+        if (imageDataUrl) break;
+        console.error(`No image extracted (attempt ${attempt + 1}):`, JSON.stringify(data).slice(0, 300));
       }
 
-      const data = await response.json();
-      const imageDataUrl = extractImageUrl(data.choices?.[0]?.message);
-
       if (imageDataUrl) {
-        // Set as reference for subsequent images if this is the first
         if (!currentReference) currentReference = imageDataUrl;
 
         try {
@@ -232,7 +240,7 @@ serve(async (req) => {
           images.push(imageDataUrl);
         }
       } else {
-        console.error("No image in CometAPI response:", JSON.stringify(data).slice(0, 500));
+        console.error("Failed to extract image after all retries for angle", i);
       }
     }
 
