@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { allStyles } from '@/data/hairStyles';
-import { ChevronLeft, Sparkles, Loader2, Lock, Download, RefreshCw } from 'lucide-react';
+import { ChevronLeft, Sparkles, Loader2, Lock, Download, RefreshCw, Home } from 'lucide-react';
 import { generateHairImage } from '@/lib/generateImage';
 import KakaoShareButton from '@/components/KakaoShareButton';
 import { downloadImageWithWatermark } from '@/lib/downloadImage';
