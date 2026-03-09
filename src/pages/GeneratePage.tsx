@@ -55,7 +55,14 @@ const GeneratePage = () => {
       const finalPrompt = `${style.prompt}, ${ethnicityDesc} person ${ageDesc}`;
       const images = await generateHairImage(finalPrompt, 1, undefined, undefined, bgOption.prompt);
       if (images.length > 0) {
-        setGeneratedImage(images[0]);
+        // 바로 구매 페이지로 이동
+        navigate(`/purchase/${style.id}`, {
+          state: {
+            previewImage: images[0],
+            backgroundPrompt: bgOption.prompt,
+          },
+        });
+        return;
       }
     } catch (err: any) {
       toast({
