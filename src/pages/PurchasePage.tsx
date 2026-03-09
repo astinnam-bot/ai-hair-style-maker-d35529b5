@@ -277,7 +277,7 @@ const PurchasePage = () => {
                     type="text"
                     value={initials}
                     onChange={(e) => setInitials(e.target.value.slice(0, 30))}
-                    placeholder="예: Suji"
+                    placeholder="예: Sujin"
                     className="w-full bg-secondary text-foreground rounded-xl px-4 py-3 text-[14px] placeholder:text-muted-foreground/50 outline-none focus:ring-2 focus:ring-primary/30 transition-all"
                   />
                 </div>
