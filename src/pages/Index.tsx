@@ -25,8 +25,8 @@ const Index = () => {
           나만의 헤어모델 만들기
         </h1>
         <p className="text-muted-foreground text-[15px] mt-2">
-          성별을 선택하고 원하는 스타일을 골라보세요
-        </p>
+           성별을 선택하고 원하는 스타일을 골라보세요!
+         </p>
       </header>
 
       <main className="flex-1 px-5 pb-10">
