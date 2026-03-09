@@ -204,7 +204,7 @@ const PurchasePage = () => {
               <Home className="w-4 h-4" />
               첫화면으로
             </button>
-            <KakaoShareButton title={style?.name || '상세 컷 구매'} description="AI 헤어모델 상세 컷" />
+            
           </div>
         </div>
         <h1 className="text-[24px] font-bold text-foreground">
