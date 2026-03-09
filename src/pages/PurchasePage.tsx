@@ -155,52 +155,33 @@ const PurchasePage = () => {
   }
 
   const handlePurchase = async () => {
-    if (!TOSS_CLIENT_KEY) {
+    // TODO: 테스트 모드 - 결제 우회. 실제 운영 시 아래 주석 해제
+    setIsProcessing(true);
+    try {
+      const images = await generateHairImage(
+        style!.prompt,
+        4,
+        previewImage,
+        copyrightText || undefined,
+        backgroundPrompt
+      );
+
+      let mergedUrl = '';
+      try {
+        mergedUrl = await createMergedImage(images);
+      } catch (e) {
+        console.error('Merge failed', e);
+      }
+      setGeneratedImages(mergedUrl ? [...images, mergedUrl] : images);
+      setIsPurchased(true);
+    } catch (err: any) {
       toast({
-        title: '결제 설정 필요',
-        description: '토스페이먼츠 클라이언트 키가 설정되지 않았어요.',
+        title: '이미지 생성 실패',
+        description: err.message || '잠시 후 다시 시도해 주세요.',
         variant: 'destructive',
       });
-      return;
-    }
-
-    setIsPaymentLoading(true);
-
-    try {
-      // Save state to sessionStorage before redirect
-      if (copyrightText) sessionStorage.setItem('purchase_copyright', copyrightText);
-      if (backgroundPrompt) sessionStorage.setItem('purchase_bgPrompt', backgroundPrompt);
-      if (previewImage) sessionStorage.setItem('purchase_previewImage', previewImage);
-
-      const orderId = `order_${styleId}_${Date.now()}`;
-      const orderName = `${style.name} 상세 컷 5장`;
-
-      // Initialize TossPayments
-      const tossPayments = (window as any).TossPayments(TOSS_CLIENT_KEY);
-      const payment = tossPayments.payment({ customerKey: `customer_${Date.now()}` });
-
-      await payment.requestPayment({
-        method: 'CARD',
-        amount: {
-          currency: 'KRW',
-          value: PRICE,
-        },
-        orderId,
-        orderName,
-        successUrl: `${window.location.origin}/purchase/${styleId}`,
-        failUrl: `${window.location.origin}/purchase/${styleId}?fail=true`,
-      });
-    } catch (err: any) {
-      // User cancelled or error
-      if (err.code !== 'USER_CANCEL') {
-        toast({
-          title: '결제 오류',
-          description: err.message || '결제를 시작할 수 없어요.',
-          variant: 'destructive',
-        });
-      }
     } finally {
-      setIsPaymentLoading(false);
+      setIsProcessing(false);
     }
   };
 
