@@ -191,7 +191,7 @@ const PurchasePage = () => {
         <div className="flex items-center justify-between mb-4">
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center gap-1 text-muted-foreground text-sm hover:text-foreground transition-colors"
+            className="flex items-center gap-1 text-primary text-sm font-semibold hover:text-primary/80 transition-colors"
           >
             <ChevronLeft className="w-4 h-4" />
             뒤로
