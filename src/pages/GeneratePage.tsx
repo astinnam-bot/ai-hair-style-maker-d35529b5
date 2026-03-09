@@ -92,7 +92,7 @@ const GeneratePage = () => {
               <Home className="w-4 h-4" />
               첫화면으로
             </button>
-            <KakaoShareButton title={style.name} description="AI 헤어모델 생성" />
+            
           </div>
         </div>
         <h1 className="text-[24px] font-bold text-foreground">

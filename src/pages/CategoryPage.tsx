@@ -30,7 +30,7 @@ const CategoryPage = () => {
               <Home className="w-4 h-4" />
               첫화면으로
             </button>
-            <KakaoShareButton title={`${genderLabel} 스타일`} description="AI 헤어모델 스타일 카테고리" />
+            
           </div>
         </div>
         <h1 className="text-[26px] font-bold text-foreground">

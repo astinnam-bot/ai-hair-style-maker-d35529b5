@@ -93,7 +93,7 @@ const StyleListPage = () => {
               <Home className="w-4 h-4" />
               첫화면으로
             </button>
-            <KakaoShareButton title={`${genderLabel} · ${catLabel}`} description="AI 헤어모델 스타일 목록" />
+            
           </div>
         </div>
         <h1 className="text-[24px] font-bold text-foreground">

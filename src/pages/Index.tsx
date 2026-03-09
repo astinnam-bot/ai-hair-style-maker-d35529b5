@@ -18,7 +18,7 @@ const Index = () => {
             <Scissors className="w-6 h-6 text-primary" />
             <span className="text-sm font-semibold text-primary">HAIR MODEL AI</span>
           </div>
-          <KakaoShareButton />
+          
         </div>
         <h1 className="text-[28px] font-bold leading-tight text-foreground">
           상용가능한<br />
