@@ -1,22 +1,18 @@
 import { useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { allStyles } from '@/data/hairStyles';
-import { ChevronLeft, Sparkles, Loader2, 
-import { generateHairImage } from '@/lib/generateImage';
+import { ChevronLeft, Sparkles, Loader2,  } from '@/lib/generateImage';
 import KakaoShareButton from '@/components/KakaoShareButton';
 import { downloadImageWithW@/hooks/use-toast';
 
-const GeneratePage = () => {
-  const navigate = useNavigate();
-  const { styleId } = useParams<{ styleId: string }>();
+const { styleId } = useParams<{ styleId: string }>();
   const [searchParams] = useSearchParams();
   const age = searchParams.get('age') || '20s';
   const ethnicity = searchParams.get('ethnicity') || 'korean';
   const style = allStyles.find(s => s.id === styleId);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
-  const [background, setBackground] = useState<'cafe' | 'hairshop' | 'sns'>('cafe');
-  const { toast } = useToast();
+  const [backgrout { toast } = useToast();
 
   const backgroundOptions = [
     { id: 'cafe' as const, label: '☕ 카페배경', prompt: 'cozy stylish cafe atmosphere with warm ambient lighting' },
