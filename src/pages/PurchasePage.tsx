@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams, useLocation, useSearchParams } from 'react-router-dom';
 import { allStyles } from '@/data/hairStyles';
 import { ChevronLeft, Check, CreditCard, Sparkles, Loader2, Download, Home } from 'lucide-react';
-import KakaoShareButton from '@/components/KakaoShareButton';
+
 import { generateHairImage } from '@/lib/generateImage';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
