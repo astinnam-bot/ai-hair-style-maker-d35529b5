@@ -3,7 +3,7 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { getStyles, categoryOptions, type Gender, type Category } from '@/data/hairStyles';
 import { ChevronLeft, Sparkles, Loader2, ImagePlus, RefreshCw, Home } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import KakaoShareButton from '@/components/KakaoShareButton';
+
 
 const StyleListPage = () => {
   const navigate = useNavigate();
