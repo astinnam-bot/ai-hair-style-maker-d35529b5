@@ -104,10 +104,7 @@ const { styleId } = useParams<{ styleId: string }>();
       </header>
 
       <main className="flex-1 px-5 pb-10">
-        {!generatedImage ? (
-          <div className="animate-fade-in">
-            {/* Background Options */}
-
+        <div className="animate-fade-in">
             {/* Background Options */}
             <div className="mb-6">
               <p className="text-sm font-semibold text-foreground mb-3">배경 선택</p>
@@ -147,61 +144,6 @@ const { styleId } = useParams<{ styleId: string }>();
               )}
             </button>
           </div>
-        ) : (
-          <div className="animate-slide-up">
-            {/* Generated image with watermark */}
-            <div className="w-full aspect-[3/4] rounded-2xl relative overflow-hidden mb-4 watermark">
-              <img
-                src={generatedImage}
-                alt={style.name}
-                className="w-full h-full object-cover rounded-2xl"
-              />
-            </div>
-
-            {/* Action buttons */}
-            <div className="flex gap-2 mb-3">
-              <button
-                onClick={handleGenerate}
-                disabled={isGenerating}
-                className="flex-1 bg-secondary text-foreground rounded-2xl py-3 text-[14px] font-semibold transition-all duration-200 active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
-              >
-                {isGenerating ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  <RefreshCw className="w-4 h-4" />
-                )}
-                다시 생성
-              </button>
-              <button
-                onClick={() => downloadImageWithWatermark(generatedImage, `${style.name}_preview.jpg`)}
-                className="flex-1 bg-secondary text-foreground rounded-2xl py-3 text-[14px] font-semibold transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-2"
-              >
-                <Download className="w-4 h-4" />
-                이미지 저장
-              </button>
-            </div>
-
-            {/* Info */}
-            <div className="bg-secondary rounded-2xl p-4 mb-4">
-              <p className="text-[13px] text-muted-foreground">
-                ⚠️ 미리보기 이미지에는 워터마크가 포함되어 있어요.
-              </p>
-            </div>
-
-            {/* Purchase CTA - pass preview image via state */}
-            <button
-              onClick={() => navigate(`/purchase/${style.id}`, { state: { previewImage: generatedImage, backgroundPrompt: backgroundOptions.find(b => b.id === background)!.prompt } })}
-              className="w-full bg-primary text-primary-foreground rounded-2xl py-4 text-[16px] font-bold transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-2"
-            >
-              <Lock className="w-4 h-4" />
-              상세 4컷 보기
-            </button>
-
-            <p className="text-center text-muted-foreground text-[12px] mt-3">
-              정면 기본컷 · 45도 측면컷 · 완전 측면 · 후면 롱샷
-            </p>
-          </div>
-        )}
       </main>
     </div>
   );
