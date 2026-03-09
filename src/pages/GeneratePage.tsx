@@ -137,7 +137,7 @@ const GeneratePage = () => {
             ) : (
               <>
                 <Sparkles className="w-5 h-5" />
-                AI 헤어모델 생성하기
+                AI 헤어모델 생성해요
               </>
             )}
           </button>
