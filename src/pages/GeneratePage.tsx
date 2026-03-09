@@ -196,7 +196,7 @@ const GeneratePage = () => {
               className="w-full bg-primary text-primary-foreground rounded-2xl py-4 text-[16px] font-bold transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-2"
             >
               <Lock className="w-4 h-4" />
-              상세 4컷 보기 · ₩9,900
+              상세 4컷 보기
             </button>
 
             <p className="text-center text-muted-foreground text-[12px] mt-3">
