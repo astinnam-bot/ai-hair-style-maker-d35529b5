@@ -94,8 +94,7 @@ const PurchasePage = () => {
       const errorMessage = searchParams.get('message');
       toast({
         title: '결제 실패',
-        description: errorMessage || '결제가 취소되었거나 실패했어요
-        variant: 'destructive',
+        description: errorMessage || '결제가 취소되었거나 실패했어요      variant: 'destructive',
       });
     }
   }, []);
@@ -108,8 +107,7 @@ const PurchasePage = () => {
       });
 
       if (confirmError || confirmData?.error) {
-        throw new Error(confirmData?.error || confirmError?.message || '결제 승인에 실패했습떴요;
-      }
+        throw new Error(confirmData?.error || confirmError?.message || '결제 승인에 실패했습떴어요  }
 
       const savedCopyright = sessionStorage.getItem('purchase_copyright') || undefined;
       const savedBgPrompt = sessionStorage.getItem('purchase_bgPrompt') || undefined;
@@ -138,7 +136,7 @@ const PurchasePage = () => {
     } catch (err: any) {
       toast({
         title: '결제 처리 실패',
-        description: err.message || '잠시 후 다시 시도해주세요.',
+        description: err.message || '잠시 후 다시 시도해주세 요.',
         variant: 'destructive',
       });
     } finally {
