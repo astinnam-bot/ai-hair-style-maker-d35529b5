@@ -363,8 +363,32 @@ const PurchasePage = () => {
                   const zip = new JSZip();
                   await Promise.all(
                     generatedImages.map(async (img, i) => {
-                      const res = await fetch(img);
-                      const blob = await res.blob();
+                      let blob: Blob;
+                      // data: URLs (merged image) can be fetched directly
+                      if (img.startsWith('data:')) {
+                        const res = await fetch(img);
+                        blob = await res.blob();
+                      } else {
+                        // For Supabase storage URLs, extract bucket path and use SDK
+                        const storagePrefix = '/storage/v1/object/public/';
+                        const idx = img.indexOf(storagePrefix);
+                        if (idx !== -1) {
+                          const fullPath = img.substring(idx + storagePrefix.length);
+                          const slashIdx = fullPath.indexOf('/');
+                          const bucket = fullPath.substring(0, slashIdx);
+                          const filePath = fullPath.substring(slashIdx + 1);
+                          const { data: fileData, error: dlError } = await supabase.storage
+                            .from(bucket)
+                            .download(filePath);
+                          if (dlError || !fileData) throw new Error(dlError?.message || '다운로드 실패');
+                          blob = fileData;
+                        } else {
+                          // fallback: direct fetch
+                          const res = await fetch(img, { mode: 'cors' });
+                          if (!res.ok) throw new Error('fetch failed');
+                          blob = await res.blob();
+                        }
+                      }
                       const ext = blob.type.includes("png") ? "png" : "jpg";
                       const label = i < 4 ? shotLabels[i].label : '4컷_병합';
                       zip.file(`${style.name}_${label}.${ext}`, blob);
@@ -379,8 +403,9 @@ const PurchasePage = () => {
                   a.click();
                   document.body.removeChild(a);
                   URL.revokeObjectURL(url);
-                } catch {
-                  toast({ title: "다운로드 실패", description: "잠시 후 다시 시도해 주세요.", variant: "destructive" });
+                } catch (e: any) {
+                  console.error('ZIP download error:', e);
+                  toast({ title: "다운로드 실패", description: e?.message || "잠시 후 다시 시도해 주세요.", variant: "destructive" });
                 }
               }}
               className="w-full mb-4 bg-primary text-primary-foreground rounded-2xl py-4 text-[16px] font-bold transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-2"
