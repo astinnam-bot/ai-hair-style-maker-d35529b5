@@ -76,7 +76,7 @@ const TermsPage = () => {
             <p className="font-medium text-foreground mt-3">3. 환불 절차</p>
             <ul className="list-disc list-inside ml-2 space-y-1">
               <li>환불 요청은 결제일로부터 7일 이내에 해주세요.</li>
-              <li>이메일(aihairmuse@gmail.com) 또는 전화(070-4063-9222)로 환불 사유와 함께 문의해주세요.</li>
+              <li>이메일(aihairmuse@gmail.com) 또는 전화(070-4063-9888)로 환불 사유와 함께 문의해주세요.</li>
               <li>확인 후 3~5영업일 이내에 결제 수단으로 환불 처리됩니다.</li>
             </ul>
           </section>
