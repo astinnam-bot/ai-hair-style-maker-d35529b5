@@ -71,10 +71,11 @@ const Index = () => {
           </p>
         </div>
 
-        <footer className="mt-8 text-center">
+        <footer className="mt-8 text-center space-y-2">
           <Link to="/term" className="text-xs text-muted-foreground/60 hover:text-muted-foreground underline transition-colors">
             이용약관
           </Link>
+          <p className="text-xs text-muted-foreground/50">© 2026 AI 헤어스타일</p>
         </footer>
       </main>
     </div>
