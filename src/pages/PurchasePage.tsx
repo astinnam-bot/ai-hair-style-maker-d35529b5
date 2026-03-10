@@ -6,7 +6,7 @@ import { ChevronLeft, Check, CreditCard, Sparkles, Loader2, Download, Home } fro
 import { generateHairImage } from '@/lib/generateImage';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import JSZip from 'jszip';
+
 
 const PRICE = 9900;
 const TOSS_CLIENT_KEY = import.meta.env.VITE_TOSS_CLIENT_KEY || 'test_ck_DpexMgkW36xpvB2xeDgwrGbR5ozO';
