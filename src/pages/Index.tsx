@@ -50,7 +50,17 @@ const Index = () => {
           ))}
         </div>
 
-        <div className="mt-8 bg-secondary rounded-2xl p-5">
+        <div className="mt-8">
+          <p className="text-sm font-semibold text-foreground mb-3">📸 샘플 이미지</p>
+          <div className="rounded-2xl overflow-hidden border border-border mb-4">
+            <img src={sampleGrid} alt="다양한 헤어스타일 샘플" className="w-full object-cover" />
+          </div>
+          <div className="rounded-2xl overflow-hidden border border-border">
+            <img src={sample4cut} alt="4컷 상세 샘플" className="w-full object-cover" />
+          </div>
+        </div>
+
+        <div className="mt-6 bg-secondary rounded-2xl p-5">
           <p className="text-sm font-semibold text-foreground mb-1">✨ AI가 생성하는 헤어 모델</p>
           <p className="text-[13px] text-muted-foreground leading-relaxed">
             전문 헤어디자이너 시술샘플 이미지 저작권 소유 상용가능한 나만의 모델 만들기
